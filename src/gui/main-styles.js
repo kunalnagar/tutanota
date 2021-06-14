@@ -699,12 +699,8 @@ styles.registerStyle('main', () => {
 			'align-items': 'center',
 			position: "relative"
 		},
-		'.folder-counter': {
+		'.counter-badge': {
 			position: 'absolute',
-			top: px(0),
-			left: px(3),
-			color: theme.navigation_button_icon,
-			background: getNavButtonIconBackground(),
 			"padding-left": px(4),
 			"padding-right": px(4),
 			"border-radius": px(8),

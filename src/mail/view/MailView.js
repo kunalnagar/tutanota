@@ -53,7 +53,7 @@ import {MAIL_PREFIX, navButtonRoutes, throttleRoute} from "../../misc/RouteChang
 import {attachDropdown, DropdownN} from "../../gui/base/DropdownN"
 import {MailFolderRow} from "./MailFolderRow"
 import {styles} from "../../gui/styles"
-import {px, size} from "../../gui/size"
+import {size} from "../../gui/size"
 import {FolderColumnView} from "../../gui/base/FolderColumnView"
 import {modal} from "../../gui/base/Modal"
 import {DomRectReadOnlyPolyfilled} from "../../gui/base/Dropdown"
@@ -67,6 +67,8 @@ import {listSelectionKeyboardShortcuts} from "../../gui/base/List"
 import {SidebarSection} from "../../gui/SidebarSection"
 import {windowFacade} from "../../misc/WindowFacade"
 import {MinimizedMailBar} from "./MinimizedMailBar"
+import {CounterBadge} from "../../gui/base/CounterBadge"
+import {theme} from "../../gui/theme"
 
 assertMainOrNode()
 
