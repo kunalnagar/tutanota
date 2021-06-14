@@ -18,7 +18,7 @@ import {FileNotFoundError} from "../../api/common/error/FileNotFoundError"
 import {PreconditionFailedError} from "../../api/common/error/RestError"
 import type {DialogHeaderBarAttrs} from "../../gui/base/DialogHeaderBar"
 import type {ButtonAttrs} from "../../gui/base/ButtonN"
-import {ButtonColors, ButtonN, ButtonType} from "../../gui/base/ButtonN"
+import {ButtonN, ButtonType} from "../../gui/base/ButtonN"
 import {attachDropdown, createDropdown} from "../../gui/base/DropdownN"
 import {fileController} from "../../file/FileController"
 import {RichTextToolbar} from "../../gui/base/RichTextToolbar"
@@ -49,7 +49,7 @@ import type {InlineImages} from "../view/MailViewer"
 import {FileOpenError} from "../../api/common/error/FileOpenError"
 import {downcast, isCustomizationEnabledForCustomer, noOp} from "../../api/common/utils/Utils"
 import {showUserError} from "../../misc/ErrorHandlerImpl"
-import {createInlineImage, replaceCidsWithInlineImages, replaceInlineImagesWithCids} from "../view/MailGuiUtils";
+import {createInlineImage, promptAndDeleteMails, replaceCidsWithInlineImages, replaceInlineImagesWithCids} from "../view/MailGuiUtils";
 import {client} from "../../misc/ClientDetector"
 import {appendEmailSignature} from "../signature/Signature"
 import {showTemplatePopupInEditor} from "../../templates/view/TemplatePopup"
@@ -497,7 +497,7 @@ function createMailEditorDialog(model: SendMailModel, blockExternalContent: bool
 	let domCloseButton: HTMLElement
 
 	const save = (showProgress: boolean = true) => {
-	 	return model.saveDraft(true, MailMethod.NONE, showProgress ? showProgressDialog : () => Promise.resolve())
+		return model.saveDraft(true, MailMethod.NONE, showProgress ? showProgressDialog : () => Promise.resolve())
 		            .catch(UserError, err => Dialog.error(() => err.message))
 		            .catch(FileNotFoundError, () => Dialog.error("couldNotAttachFile_msg"))
 		            .catch(PreconditionFailedError, () => Dialog.error("operationStillActive_msg"))
@@ -509,10 +509,10 @@ function createMailEditorDialog(model: SendMailModel, blockExternalContent: bool
 				Dialog.confirm,
 				showProgressDialog)
 			     .then(success => {
-			     	if (success) {
-				        dispose()
-				        dialog.close()
-			        }
+				     if (success) {
+					     dispose()
+					     dialog.close()
+				     }
 			     })
 			     .catch(UserError, (err) => Dialog.error(() => err.message))
 		} catch (e) {
@@ -541,30 +541,31 @@ function createMailEditorDialog(model: SendMailModel, blockExternalContent: bool
 			type: ButtonType.Secondary,
 			oncreate: vnode => domCloseButton = vnode.dom
 		},
-		() => closeButtonActions(), () => model.hasMailChanged(), 250
+		() => closeButtonActions(), () => model.getDraft() !== null || model.hasMailChanged(), 250
 	)
 
-	const minimizeButtonAttrs: ButtonAttrs = {
-		label: "minimize_action",
-		click: () => minimize(),
-		type: ButtonType.Secondary,
+	const discardDraftAction = async () => {
+		const discarded = model.getDraft() ?
+			await promptAndDeleteMails(model.mails(), [model.getDraft()], noOp)
+			: true
+		if (discarded) {
+			dialog.close()
+		}
 	}
 
 	const closeButtonActions = () => {
 		let buttons = [
 			{
-				label: "discardChanges_action",
-				click: () => dialog.close(),
+				label: "discardDraft_action",
+				click: discardDraftAction,
 				type: ButtonType.Dropdown,
 			}
 		]
-		if (styles.isUsingBottomNavigation()) {
-			buttons.push({
-				label: "minimize_action",
-				click: () => minimize(),
-				type: ButtonType.Dropdown,
-			})
-		}
+		buttons.push({
+			label: "minimize_action",
+			click: () => minimize(),
+			type: ButtonType.Dropdown,
+		})
 		buttons.push({
 			label: "saveDraft_action",
 			click: () => { save().then(() => dialog.close()) },
@@ -575,7 +576,7 @@ function createMailEditorDialog(model: SendMailModel, blockExternalContent: bool
 
 	let windowCloseUnsubscribe = () => false
 	const headerBarAttrs: DialogHeaderBarAttrs = {
-		left: styles.isUsingBottomNavigation() ? [closeButtonAttrs] : [closeButtonAttrs, minimizeButtonAttrs],
+		left: [closeButtonAttrs],
 		right: [
 			{
 				label: "send_action",

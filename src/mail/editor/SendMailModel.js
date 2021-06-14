@@ -833,10 +833,11 @@ export class SendMailModel {
 			      .then(trashAndMailFolders => trashAndMailFolders.find(folder => isSameId(folder.mails, getListId(_draft))) != null)
 			: Promise.resolve(true)
 
-		const savePromise = doCreateNewDraft.then(createNewDraft => createNewDraft
-			? this._createDraft(this.getBody(), attachments, mailMethod)
-			: this._updateDraft(this.getBody(), attachments, neverNull(_draft))
-		).then((draft) => {
+		const savePromise = doCreateNewDraft.then(createNewDraft => {
+			return createNewDraft
+				? this._createDraft(this.getBody(), attachments, mailMethod)
+				: this._updateDraft(this.getBody(), attachments, neverNull(_draft))
+		}).then((draft) => {
 			this._draft = draft
 			return Promise.map(draft.attachments, fileId => this._entity.load(FileTypeRef, fileId)).then(attachments => {
 				this._attachments = [] // attachFiles will push to existing files but we want to overwrite them
