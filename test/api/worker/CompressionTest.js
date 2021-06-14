@@ -16,8 +16,8 @@ o.spec("Compression", function () {
 		})
 	})
 
-	o.spec('small', function () {
-		o.only('should encode no data', function () {
+	o.spec('too small', function () {
+		o('should encode no data', function () {
 			const small = stringToUtf8Uint8Array("hello")
 			const a = compress(small)
 			const b = uncompress(a)
@@ -27,9 +27,10 @@ o.spec("Compression", function () {
 	})
 
 	o.spec('nonempty', function () {
-		o('should encode data', function () {
+		o.only('should encode data', function () {
 			const input = stringToUtf8Uint8Array(data())
-			const result = uncompress(compress(input))
+			const a = compress(input)
+			const result = uncompress(a)
 			o(Array.from(result)).deepEquals(Array.from(input))
 		})
 	})
