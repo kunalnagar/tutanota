@@ -227,17 +227,28 @@ export class MailView implements CurrentView {
 	}
 
 	headerRightView(): Children {
+		const minimizeModel = locator.minimizedMailModel
+		const minimizedEditors = minimizeModel.getMinimizedEditors().length
 		const openMailButtonAttrs = attachDropdown({
 				label: "newMail_action",
 				click: () => this._showNewMailDialog().catch(PermissionError, noOp),
 				type: ButtonType.Action,
 				icon: () => Icons.PencilSquare,
 				colors: ButtonColors.Header
-			}, () => this.renderMinimizedEditorsDropdown(), () => locator.minimizedMailModel.getMinimizedEditors().length > 0, 250
+			}, () => this.renderMinimizedEditorsDropdown(), () => minimizedEditors > 0, 250
 		)
 
 		return isNewMailActionAvailable()
-			? m(ButtonN, openMailButtonAttrs)
+			? [
+				m(CounterBadge, {
+					count: minimizedEditors,
+					top: 5,
+					left: 10,
+					color: theme.header_bg,
+					background: theme.header_button_selected
+				}),
+				m(ButtonN, openMailButtonAttrs)
+			]
 			: null
 	}
 

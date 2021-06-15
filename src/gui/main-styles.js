@@ -7,7 +7,7 @@ import {noselect, position_absolute, positionValue} from "./mixins"
 import {assertMainOrNodeBoot, isAdminClient, isApp, isDesktop} from "../api/common/Env"
 import {theme} from "./theme.js"
 import {BrowserType} from "../misc/ClientConstants"
-import {getContentButtonIconBackground, getElevatedBackground, getNavButtonIconBackground, getNavigationMenuBg} from "./theme"
+import {getContentButtonIconBackground, getElevatedBackground, getNavigationMenuBg} from "./theme"
 
 assertMainOrNodeBoot()
 

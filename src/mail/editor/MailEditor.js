@@ -545,8 +545,9 @@ function createMailEditorDialog(model: SendMailModel, blockExternalContent: bool
 	)
 
 	const discardDraftAction = async () => {
-		const discarded = model.getDraft() ?
-			await promptAndDeleteMails(model.mails(), [model.getDraft()], noOp)
+		const draft = model._draft
+		const discarded = draft ?
+			await promptAndDeleteMails(model.mails(), [draft], noOp)
 			: true
 		if (discarded) {
 			dialog.close()
