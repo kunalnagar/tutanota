@@ -5,6 +5,8 @@ import {animations} from "../animation/Animations"
 import {requiresStatusBarHack} from "../main-styles"
 import {ease} from "../animation/Easing"
 import {assertMainOrNodeBoot} from "../../api/common/Env"
+import type {LayerTypeEnum} from "../../RootView"
+import {LayerType} from "../../RootView"
 
 assertMainOrNodeBoot()
 
@@ -15,6 +17,7 @@ export type PositionRect = {
 	width?: ?string,
 	bottom?: ?string,
 	height?: ?string,
+	zIndex?: LayerTypeEnum
 }
 
 type AnimationProvider = (dom: HTMLElement) => DomMutation
@@ -71,7 +74,7 @@ export const overlay = {
 				right: attrs.position.right,
 				left: attrs.position.left,
 				height: attrs.position.height,
-				'z-index': 200,
+				'z-index': attrs.position.zIndex ? attrs.position.zIndex : LayerType.Overlay,
 				'margin-top': (requiresStatusBarHack() ? "20px" : 'env(safe-area-inset-top)') // insets for iPhone X
 			},
 			oncreate: (vnode: Vnode<any>) => {

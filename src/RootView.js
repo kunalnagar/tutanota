@@ -6,6 +6,14 @@ import {overlay} from "./gui/base/Overlay"
 import {styles} from "./gui/styles"
 
 assertMainOrNodeBoot()
+export const LayerType = Object.freeze({
+	View: 0,
+	Modal: 99,
+	Minimized: 50,
+	Overlay: 200
+})
+export type LayerTypeEnum = $Values<typeof LayerType>;
+
 
 class RootView {
 	view: Function;

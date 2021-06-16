@@ -58,6 +58,7 @@ import {TemplatePopupModel} from "../../templates/model/TemplatePopupModel"
 import {createKnowledgeBaseDialogInjection, createOpenKnowledgeBaseButtonAttrs} from "../../knowledgebase/view/KnowledgeBaseDialog"
 import {KnowledgeBaseModel} from "../../knowledgebase/model/KnowledgeBaseModel"
 import {styles} from "../../gui/styles"
+import {showLatestMinimizedEditor} from "../view/MinimizedMailBar"
 
 export type MailEditorAttrs = {
 	model: SendMailModel,
@@ -528,22 +529,17 @@ function createMailEditorDialog(model: SendMailModel, blockExternalContent: bool
 
 	const minimize = () => {
 		save(false)
-		locator.minimizedMailModel.minimize(dialog, model, dispose)
+		const minimizedEditor = locator.minimizedMailModel.addEditorDialog(dialog, model, dispose)
 		dialog.close()
+		showLatestMinimizedEditor(minimizedEditor)
 	}
 
-	const closeButtonAttrs = attachDropdown({
-			label: "close_alt",
-			click: () => {
-				dispose()
-				dialog.close()
-			},
-			type: ButtonType.Secondary,
-			oncreate: vnode => domCloseButton = vnode.dom
-		},
-		() => closeButtonActions(), () => model.getDraft() !== null || model.hasMailChanged(), 250
-	)
-
+	const closeButtonAttrs = {
+		label: "minimize_action",
+		click: (event, dom) => minimize(),
+		type: ButtonType.Secondary,
+		oncreate: vnode => domCloseButton = vnode.dom
+	}
 	const discardDraftAction = async () => {
 		const draft = model._draft
 		const discarded = draft ?

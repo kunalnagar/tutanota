@@ -1,6 +1,7 @@
 // @flow
 import m from 'mithril'
 import {logins} from '../api/main/LoginController.js'
+import type {PositionRect} from "./base/Overlay"
 import {displayOverlay} from './base/Overlay'
 import {px, size} from "./size"
 import {Icons} from "./base/icons/Icons"
@@ -57,14 +58,7 @@ export class SearchInPageOverlay {
 		m.redraw()
 	}
 
-	_getRect(): {|
-		bottom?: ?string,
-		height?: ?string,
-		left?: ?string,
-		right?: ?string,
-		top?: ?string,
-		width?: ?string,
-	|} {
+	_getRect(): PositionRect {
 		return {
 			height: px(size.navbar_height_mobile),
 			bottom: px(0),

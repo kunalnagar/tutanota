@@ -2,7 +2,7 @@
 
 import type {Dialog} from "../../gui/base/Dialog"
 import type {SendMailModel} from "../editor/SendMailModel"
-import {remove} from "../../api/common/utils/ArrayUtils"
+import {lastThrow, remove} from "../../api/common/utils/ArrayUtils"
 import type {EntityUpdateData} from "../../api/main/EventController"
 import {EventController, isUpdateForTypeRef} from "../../api/main/EventController"
 import type {Mail} from "../../api/entities/tutanota/Mail"
@@ -29,7 +29,7 @@ export class MinimizedMailModel {
 		this._eventController.addEntityListener((updates) => this.entityEventsReceived(updates))
 	}
 
-	minimize(dialog: Dialog, sendMailModel: SendMailModel, dispose: () => void) {
+	addEditorDialog(dialog: Dialog, sendMailModel: SendMailModel, dispose: () => void): MinimizedEditor {
 		// disallow creation of duplicate minimized mails
 		if (!this._minimizedEditors.find(editor => editor.dialog === dialog)) {
 			this._minimizedEditors.push({
@@ -38,6 +38,7 @@ export class MinimizedMailModel {
 				dispose: dispose
 			})
 		}
+		return lastThrow(this._minimizedEditors)
 	}
 
 	entityEventsReceived(updates: $ReadOnlyArray<EntityUpdateData>): Promise<void> {

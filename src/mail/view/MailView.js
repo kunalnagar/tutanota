@@ -65,8 +65,6 @@ import {getListId, isSameId} from "../../api/common/utils/EntityUtils"
 import {isNewMailActionAvailable} from "../../gui/nav/NavFunctions"
 import {listSelectionKeyboardShortcuts} from "../../gui/base/List"
 import {SidebarSection} from "../../gui/SidebarSection"
-import {windowFacade} from "../../misc/WindowFacade"
-import {MinimizedMailBar} from "./MinimizedMailBar"
 import {CounterBadge} from "../../gui/base/CounterBadge"
 import {theme} from "../../gui/theme"
 
@@ -182,16 +180,7 @@ export class MailView implements CurrentView {
 					ev.stopPropagation()
 					ev.preventDefault()
 				}
-			}, [
-				m(this.viewSlider),
-				locator.minimizedMailModel.getMinimizedEditors().length
-					? m(MinimizedMailBar, {
-						windowFacade: windowFacade,
-						minimizedMailModel: locator.minimizedMailModel
-					})
-					: null
-
-			])
+			}, m(this.viewSlider))
 		}
 
 		this._setupShortcuts()
