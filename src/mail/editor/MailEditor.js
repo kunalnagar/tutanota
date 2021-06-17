@@ -58,7 +58,7 @@ import {TemplatePopupModel} from "../../templates/model/TemplatePopupModel"
 import {createKnowledgeBaseDialogInjection, createOpenKnowledgeBaseButtonAttrs} from "../../knowledgebase/view/KnowledgeBaseDialog"
 import {KnowledgeBaseModel} from "../../knowledgebase/model/KnowledgeBaseModel"
 import {styles} from "../../gui/styles"
-import {showLatestMinimizedEditor} from "../view/MinimizedMailBar"
+import {showLatestMinimizedEditor} from "../view/MinimizedMailEditorOverlay"
 
 export type MailEditorAttrs = {
 	model: SendMailModel,
