@@ -1,6 +1,6 @@
 pipeline {
     environment {
-         NODE_PATH="/opt/node-v14.15.4-linux-x64/bin"
+         NODE_PATH="/opt/node-v16.3.0-linux-x64/bin"
          NODE_MAC_PATH="/usr/local/opt/node@14/bin/"
     }
 	options {
