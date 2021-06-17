@@ -14,6 +14,11 @@ pipeline {
         	defaultValue: false,
         	description: 'pull the spellcheck dictionaries from github when producing .debs'
         )
+        booleanParam(
+        	name: 'PUBLISH_NPM_MODULES',
+        	defaultValue: false,
+        	description: 'publish workspace modules to NPM'
+        )
     }
 
     agent {
@@ -176,7 +181,7 @@ pipeline {
 
         stage('Publish modules') {
 			when {
-				expression { params.RELEASE }
+				expression { params.RELEASE || params.PUBLISH_NPM_MODULES }
 			}
 			agent {
 				label 'linux'
@@ -189,7 +194,7 @@ pipeline {
 				withCredentials([string(credentialsId: 'npm-token',variable: 'NPM_TOKEN')]) {
 					sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >> .npmrc"
 				}
-				npm --workspace=@tutao/tutanota-build-server publish
+				npm --workspace=@tutao/tutanota-build-server publish --dry-run
 				sh "rm .npmrc"
 			}
         }
